@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={`${archivo.className} background-color`}>
         <div className='flex flex-col'>
           <Navbar />
-          <div className='sm:max-w-4xl sm:m-auto mx-2 object-center'>{children}</div>
+          <div className='sm:max-w-3xl sm:m-auto mx-2 object-center'>{children}</div>
         </div>
       </body>
     </html>

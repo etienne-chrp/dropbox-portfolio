@@ -12,9 +12,9 @@ const Navbar = () => {
 
   const genericHamburgerLine = `h-[0.2rem] w-5 my-[0.2rem] rounded-full bg-black transition ease transform duration-300 opacity-50 group-hover:opacity-100`;
   return (
-    <nav className="mx-2 flex">
-      <div className="grow">
-        <Link onClick={() => setMenuOpen(false)} href="/" className="logo">
+    <nav className="h-8 mx-2 flex">
+      <div className="relative grow">
+        <Link onClick={() => setMenuOpen(false)} href="/" className="logo absolute bottom-0">
           pamela maldonado vallejos
         </Link>
       </div>
@@ -32,7 +32,7 @@ const Navbar = () => {
         w-full sm:w-auto
         background-color sm:bg-transparent
         
-        sm:flex sm:space-x-8 sm:self-end
+        sm:flex sm:space-x-8 sm:self-end sm:items-end
         "
       >
         <li>
