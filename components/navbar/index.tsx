@@ -21,7 +21,7 @@ const Navbar = () => {
       <input type="checkbox" checked={menuOpen} onChange={() => setMenuOpen(!menuOpen)} id="menuBtn"
         className="peer transition-all sm:hidden hidden" />
       <ul className="
-        transition-all overflow-hidden
+        transition-all overflow-hidden z-50
 
         peer-checked:pt-4
         peer-checked:-mx-2
@@ -42,7 +42,7 @@ const Navbar = () => {
           <Link onClick={() => setMenuOpen(false)} href="/about">About</Link>
         </li>
       </ul>
-      <label htmlFor="menuBtn" className="sm:showing sm:hidden">
+      <label htmlFor="menuBtn" className="sm:showing sm:hidden z-50">
         <div className={`${genericHamburgerLine} ${menuOpen && "rotate-45 translate-y-[0.4rem]"}`} />
         <div className={`${genericHamburgerLine} ${menuOpen && "!opacity-0"}`} />
         <div className={`${genericHamburgerLine} ${menuOpen && "-rotate-45 -translate-y-[0.4rem]"}`} />

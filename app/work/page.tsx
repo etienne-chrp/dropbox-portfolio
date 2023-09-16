@@ -1,4 +1,4 @@
-import DbxThumbnail from "@/components/dbx_thumbnail";
+import DynamicImage from "@/components/DynamicImage";
 import { AppConstants } from "@/utils/constants";
 import { listFolder } from "@/utils/dbx/api_client"
 import { SharedLink } from "@/utils/dbx/common";
@@ -15,28 +15,28 @@ export default async function Page() {
         const path = `${AppConstants.WORK_FOLDER_PATH}/${folder.name}`
         const mainImagePath = `${path}/${AppConstants.WORK_IMG_FOLDER_NAME}/${AppConstants.WORK_MAIN_IMG_NAME}`;
 
-        let mainImageThumbnail = await DbxThumbnail(SharedLink, mainImagePath, "max-h-64");
-
         return {
           folder: folder,
           path: path,
           mainImagePath: mainImagePath,
-          mainImageThumbnail: mainImageThumbnail
         };
       }))
 
   return (
     <main>
-      <div className="flex flex-row flex-wrap">
+      <div className="flex sm:flex-row flex-wrap">
         {
           works.map(work => {
             return (
-              <div key={work.folder.name} className="basis-full sm:basis-[calc(33.33%)] m-auto sm:m-0 p-4 mt-2 mb-2 flex flex-col items-center">
-                <div className="grow flex m-auto items-center">
-                  <Link href={`/work/${work.folder.name}`}>
-                    {work.mainImageThumbnail}
-                  </Link>
-                </div>
+              <div key={work.folder.name} className="basis-full h-64 sm:basis-[calc(33.33%)] m-auto sm:m-0 sm:p-4 my-2 flex flex-col items-center">
+                <Link href={`/work/${work.folder.name}`} className="grow flex m-auto items-center w-full h-full">
+                  <DynamicImage
+                    src={`/work/${work.folder.name}/thumbnail/${AppConstants.WORK_MAIN_IMG_NAME}`}
+                    alt={work.mainImagePath}
+                    thumbnail
+                    fill
+                  />
+                </Link>
                 <div className="mt-2 h-16">{work.folder.name}</div>
               </div>
             )

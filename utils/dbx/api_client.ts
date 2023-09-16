@@ -8,7 +8,7 @@ const dbx = new Dropbox({
     clientSecret: dbxClientSecret
 })
 
-export const revalidate = 60 // revalidate the data at most every minute
+export const revalidate = 600 // revalidate the data at most every minute
 
 export const getFile = cache(async (sharedLink: string, path: string) => {
     return (await dbx.sharingGetSharedLinkFile({ url: sharedLink, path: path }))
@@ -42,7 +42,7 @@ export const listFolder = cache(async (sharedLink: string, path: string) => {
     return (await dbx.filesListFolder({ path: path, shared_link: { url: sharedLink } })).result
 });
 
-const getThumbnail = cache(async (sharedLink: string, path: string, size: dbxFile.ThumbnailSize) => {
+export const getThumbnail = cache(async (sharedLink: string, path: string, size: dbxFile.ThumbnailSize) => {
     return await dbx.filesGetThumbnailV2({
         resource: {
             '.tag': "link",
