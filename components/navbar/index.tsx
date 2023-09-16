@@ -10,7 +10,7 @@ const Navbar = () => {
     document.body.style.overflow = menuOpen ? "hidden" : "visible"
   }, [menuOpen])
 
-  const genericHamburgerLine = `h-[0.2rem] w-5 my-[0.2rem] rounded-full bg-black transition ease transform duration-300 opacity-50 group-hover:opacity-100`;
+  const genericHamburgerLine = `h-[0.2rem] w-5 rounded-full bg-black transition ease transform duration-300 opacity-50 group-hover:opacity-100`;
   return (
     <nav className="h-8 mx-2 flex">
       <div className="relative grow">
@@ -42,7 +42,7 @@ const Navbar = () => {
           <Link onClick={() => setMenuOpen(false)} href="/about">About</Link>
         </li>
       </ul>
-      <label htmlFor="menuBtn" className="sm:showing sm:hidden z-50">
+      <label htmlFor="menuBtn" className="flex flex-col space-y-[0.2rem] justify-center sm:showing sm:hidden z-50">
         <div className={`${genericHamburgerLine} ${menuOpen && "rotate-45 translate-y-[0.4rem]"}`} />
         <div className={`${genericHamburgerLine} ${menuOpen && "!opacity-0"}`} />
         <div className={`${genericHamburgerLine} ${menuOpen && "-rotate-45 -translate-y-[0.4rem]"}`} />
