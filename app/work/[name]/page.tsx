@@ -4,6 +4,27 @@ import { SharedLink } from "@/utils/dbx/common";
 import Link from "next/link";
 import ReactMarkdown from 'react-markdown'
 import DynamicImage from "@/components/DynamicImage";
+import { getNameWithoutExtensionSuffix, getNameWithoutOrderPrefix } from "@/utils/nameFormat";
+
+const WorkImage = ({ name, key, workName, workDisplayName, hover }: {
+    name: string, key?: string, workName: string, workDisplayName: string, hover?: boolean
+}) => {
+    return (
+        <div className="relative">
+            <div key={key} className={`peer my-4 transition-all ${hover && 'hover:brightness-50'}`}>
+                <Link href={AppConstants.getWorkImgPath(workDisplayName, name)}>
+                    <DynamicImage
+                        src={`/work/${workName}/thumbnail/${name}`}
+                        alt={AppConstants.getWorkImgPath(workDisplayName, name)}
+                    />
+                </Link>
+            </div>
+            { hover &&
+                <div className="peer-hover:block hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white">{getNameWithoutExtensionSuffix(getNameWithoutOrderPrefix(name))}</div>
+            }
+        </div>
+    )
+}
 
 export default async function Page({ params }: { params: { name: string } }) {
     const uriDecodedName = decodeURIComponent(params.name);
@@ -19,32 +40,19 @@ export default async function Page({ params }: { params: { name: string } }) {
         console.error(`${errorMsg}:\n${e}`)
         return (<div>{errorMsg}</div>)
     }
-    const imageList = imgFolder.entries.filter(img => img.name != AppConstants.WORK_MAIN_IMG_NAME);
+    const imageList = imgFolder.entries
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .filter(img => img.name != AppConstants.WORK_MAIN_IMG_NAME);
 
     return (
         <div className="mt-8">
             <ReactMarkdown>{infoMarkdown}</ReactMarkdown>
-            <div className="mt-4 mb-4">
-                <Link href={AppConstants.getWorkMainImgPath(uriDecodedName)}>
-                    <DynamicImage
-                        src={`/work/${params.name}/thumbnail/${AppConstants.WORK_MAIN_IMG_NAME}`}
-                        alt={AppConstants.getWorkMainImgPath(uriDecodedName)}
-                        priority={true}
-                    />
-                </Link>
-            </div>
+            <WorkImage name={AppConstants.WORK_MAIN_IMG_NAME} workName={params.name} workDisplayName={uriDecodedName} />
             <ReactMarkdown>{descriptionMarkdown}</ReactMarkdown>
             <div className="flex flex-col">
                 {imageList.map(image => {
                     return (
-                        <div key={image.name} className="min-w-fit mb-4 mt-4 items-center">
-                            <Link href={AppConstants.getWorkImgPath(uriDecodedName, image.name)}>
-                                <DynamicImage
-                                    src={`/work/${params.name}/thumbnail/${image.name}`}
-                                    alt={AppConstants.getWorkImgPath(uriDecodedName, image.name)}
-                                />
-                            </Link>
-                        </div>
+                        <WorkImage key={image.name} name={image.name} workName={params.name} workDisplayName={uriDecodedName} hover />
                     )
                 })}
             </div>
