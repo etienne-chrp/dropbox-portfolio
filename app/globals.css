@@ -21,6 +21,10 @@
   .background-color {
     background-color: white;
   }
+  
+  .logo {
+    @apply whitespace-nowrap text-xl
+  }
 }
 
 body {

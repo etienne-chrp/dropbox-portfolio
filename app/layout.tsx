@@ -1,3 +1,4 @@
+import Navbar from '@/components/navbar'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Archivo } from 'next/font/google'
@@ -19,7 +20,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${archivo.className} background-color`}>{children}</body>
+      <body className={`${archivo.className} background-color`}>
+        <div className='flex flex-col'>
+          <Navbar />
+          <div className='sm:max-w-4xl sm:m-auto mx-2 object-center'>{children}</div>
+        </div>
+      </body>
     </html>
   )
 }
