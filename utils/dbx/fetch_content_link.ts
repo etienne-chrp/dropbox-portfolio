@@ -1,4 +1,4 @@
-import { SharedLink, getSharedLinkWithPath } from "./common"
+import { SharedLink } from "./common"
 import { getFolder } from "./api_client";
 
 async function getRedirectUrl(url: string) {
