@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={archivo.className}>{children}</body>
+      <body className={`${archivo.className} background-color`}>{children}</body>
     </html>
   )
 }
