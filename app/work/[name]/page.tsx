@@ -6,8 +6,8 @@ import ReactMarkdown from 'react-markdown'
 import DynamicImage from "@/components/DynamicImage";
 import { getNameWithoutExtensionSuffix, getNameWithoutOrderPrefix } from "@/utils/nameFormat";
 
-const WorkImage = ({ name, key, workName, workDisplayName, hover }: {
-    name: string, key?: string, workName: string, workDisplayName: string, hover?: boolean
+const WorkImage = ({ name, key, workName, workDisplayName, hover, priority }: {
+    name: string, key?: string, workName: string, workDisplayName: string, hover?: boolean, priority?: boolean
 }) => {
     return (
         <div className="relative">
@@ -16,6 +16,7 @@ const WorkImage = ({ name, key, workName, workDisplayName, hover }: {
                     <DynamicImage
                         src={`/work/${workName}/thumbnail/${name}`}
                         alt={AppConstants.getWorkImgPath(workDisplayName, name)}
+                        priority={priority}
                     />
                 </Link>
             </div>
@@ -47,7 +48,7 @@ export default async function Page({ params }: { params: { name: string } }) {
     return (
         <div className="mt-8">
             <ReactMarkdown>{infoMarkdown}</ReactMarkdown>
-            <WorkImage name={AppConstants.WORK_MAIN_IMG_NAME} workName={params.name} workDisplayName={uriDecodedName} />
+            <WorkImage name={AppConstants.WORK_MAIN_IMG_NAME} workName={params.name} workDisplayName={uriDecodedName} priority />
             <ReactMarkdown>{descriptionMarkdown}</ReactMarkdown>
             <div className="flex flex-col">
                 {imageList.map(image => {

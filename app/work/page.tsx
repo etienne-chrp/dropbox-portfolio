@@ -38,6 +38,7 @@ export default async function Page() {
                     alt={work.mainImagePath}
                     thumbnail
                     fill
+                    priority
                   />
                 </Link>
                 <div className="mt-2 h-16">{work.workName}</div>
