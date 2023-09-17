@@ -12,11 +12,11 @@ export default function DynamicImage({ src, alt, fill, priority, className, thum
     className?: string
 }) {
     const sizes = thumbnail ?
-        "40vw" :
+        "50vw" :
         "(max-width: 768px) 80vw, (max-width: 1200px) 90vw, 100vw";
     const width = fill ? undefined : thumbnail ? 160 : 640;
     const height = fill ? undefined : thumbnail ? 120 : 480;
-    const style: CSSProperties = fill ? { objectFit: 'contain' } : { height: 'auto' }
+    const style: CSSProperties = fill ? { objectFit: 'cover' } : { height: 'auto' }
 
     return (
         <div className={`relative ${fill && "w-full h-full"}`} >
