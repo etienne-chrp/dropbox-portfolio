@@ -34,7 +34,7 @@ export default async function Page() {
               <div key={work.folder.name} className="basis-full sm:basis-[calc(33.33%)] m-auto sm:m-0 sm:p-3 my-2 flex flex-col items-center">
                 <Link href={`/work/${work.folder.name}`} className="grow flex m-auto items-center w-full aspect-[5/4]">
                   <DynamicImage
-                    src={`/work/${work.folder.name}/thumbnail/${AppConstants.WORK_MAIN_IMG_NAME}`}
+                    src={(`/work/${encodeURIComponent(work.folder.name)}/thumbnail/${AppConstants.WORK_MAIN_IMG_NAME}`)}
                     alt={work.mainImagePath}
                     thumbnail
                     fill
