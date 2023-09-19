@@ -10,7 +10,7 @@ export default async function Page() {
   const aboutMarkdown = await getTextFileOrErrorMsg(SharedLink, AppConstants.getAboutPath())
 
   return (
-    <div className='w-1/2 m-auto'>
+    <div className='sm:w-1/2 m-auto mt-6'>
       <ReactMarkdownPortfolio>{aboutMarkdown}</ReactMarkdownPortfolio>
     </div>
   )
