@@ -46,7 +46,7 @@ export default async function Page({ params }: { params: { name: string } }) {
         .filter(img => img.name != AppConstants.WORK_MAIN_IMG_NAME);
 
     return (
-        <div className="mt-8">
+        <div className="mt-6">
             <ReactMarkdownPortfolio>{infoMarkdown}</ReactMarkdownPortfolio>
             <WorkImage name={AppConstants.WORK_MAIN_IMG_NAME} workName={params.name} workDisplayName={uriDecodedName} priority />
             <ReactMarkdownPortfolio>{descriptionMarkdown}</ReactMarkdownPortfolio>
