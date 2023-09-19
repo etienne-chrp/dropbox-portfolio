@@ -26,6 +26,7 @@ const Navbar = () => {
         peer-checked:pt-4
         peer-checked:-mx-2
         peer-checked:px-2
+        peer-checked:text-xl
 
         h-0 peer-checked:h-full sm:h-full
         fixed sm:relative

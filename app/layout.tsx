@@ -1,11 +1,11 @@
 import Navbar from '@/components/navbar'
 import './globals.css'
 import type { Metadata } from 'next'
-import { Archivo } from 'next/font/google'
+import { Crimson_Text } from 'next/font/google'
 
-const archivo = Archivo({
+const crimson = Crimson_Text({
   subsets: ['latin'],
-  axes: ['wdth'],
+  weight: '400',
 })
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${archivo.className} background-color`}>
+      <body className={`${crimson.className} background-color`}>
         <div className='flex flex-col'>
           <Navbar />
           <div className='sm:max-w-3xl w-full self-center px-2 object-center'>{children}</div>
