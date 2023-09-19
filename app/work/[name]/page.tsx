@@ -11,7 +11,7 @@ const WorkImage = ({ name, key, workName, workDisplayName, hover, priority }: {
 }) => {
     return (
         <div className="relative">
-            <div key={key} className={`peer my-4 transition-all ${hover && 'hover:brightness-50'}`}>
+            <div key={key} className={`peer my-4 transition-all ${hover && 'sm:hover:brightness-50'}`}>
                 <Link href={AppConstants.getWorkImgPath(workDisplayName, name)}>
                     <DynamicImage
                         src={`/work/${workName}/thumbnail/${name}`}
@@ -20,8 +20,8 @@ const WorkImage = ({ name, key, workName, workDisplayName, hover, priority }: {
                     />
                 </Link>
             </div>
-            { hover &&
-                <div className="peer-hover:block hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white">{getNameWithoutExtensionSuffix(getNameWithoutOrderPrefix(name))}</div>
+            {hover &&
+                <div className="sm:peer-hover:block hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white pointer-events-none">{getNameWithoutExtensionSuffix(getNameWithoutOrderPrefix(name))}</div>
             }
         </div>
     )
