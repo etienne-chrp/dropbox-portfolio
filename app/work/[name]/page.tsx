@@ -2,9 +2,9 @@ import { AppConstants } from "@/utils/constants";
 import { getTextFileOrErrorMsg, listFolder } from "@/utils/dbx/api_client";
 import { SharedLink } from "@/utils/dbx/common";
 import Link from "next/link";
-import ReactMarkdown from 'react-markdown'
 import DynamicImage from "@/components/DynamicImage";
 import { getNameWithoutExtensionSuffix, getNameWithoutOrderPrefix } from "@/utils/nameFormat";
+import ReactMarkdownPortfolio from "@/components/ReactMarkdownPortfolio";
 
 const WorkImage = ({ name, key, workName, workDisplayName, hover, priority }: {
     name: string, key?: string, workName: string, workDisplayName: string, hover?: boolean, priority?: boolean
@@ -47,9 +47,9 @@ export default async function Page({ params }: { params: { name: string } }) {
 
     return (
         <div className="mt-8">
-            <ReactMarkdown>{infoMarkdown}</ReactMarkdown>
+            <ReactMarkdownPortfolio>{infoMarkdown}</ReactMarkdownPortfolio>
             <WorkImage name={AppConstants.WORK_MAIN_IMG_NAME} workName={params.name} workDisplayName={uriDecodedName} priority />
-            <ReactMarkdown>{descriptionMarkdown}</ReactMarkdown>
+            <ReactMarkdownPortfolio>{descriptionMarkdown}</ReactMarkdownPortfolio>
             <div className="flex flex-col">
                 {imageList.map(image => {
                     return (
