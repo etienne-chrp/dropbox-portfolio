@@ -60,7 +60,7 @@ export default async function Page({ params }: Props) {
     }
     const imageList = imgFolder.entries
         .sort((a, b) => a.name.localeCompare(b.name))
-        .filter(img => img.name != AppConstants.WORK_MAIN_IMG_NAME);
+        .filter(img => img.name.toLowerCase() != AppConstants.WORK_MAIN_IMG_NAME.toLowerCase());
 
     return (
         <div className="mt-6">
