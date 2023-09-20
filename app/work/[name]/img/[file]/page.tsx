@@ -1,6 +1,6 @@
 import { AppConstants } from "@/utils/constants";
 import { getFileUrl } from "@/utils/dbx/fetch_content_link"
-import { getNameWithoutOrderPrefix } from "@/utils/nameFormat";
+import { getNameWithoutOrderPrefix, getNameWithoutExtensionSuffix } from "@/utils/nameFormat";
 import { Metadata } from "next";
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const workName = getNameWithoutOrderPrefix(decodeURIComponent(params.name));
-    const imgName = getNameWithoutOrderPrefix(decodeURIComponent(params.file));
+    const imgName = getNameWithoutExtensionSuffix(getNameWithoutOrderPrefix(decodeURIComponent(params.file)));
     return {
         title: `${imgName} | ${workName}`,
         openGraph: {
