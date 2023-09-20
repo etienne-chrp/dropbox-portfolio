@@ -11,7 +11,7 @@ export default async function Page() {
   const folderList = await listFolder(SharedLink, AppConstants.WORK_FOLDER_PATH);
   const works = await Promise.all(
     folderList.entries
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => b.name.localeCompare(a.name))
       .map(async folder => {
         const path = `${AppConstants.WORK_FOLDER_PATH}/${folder.name}`
         const workName = getNameWithoutOrderPrefix(folder.name);
