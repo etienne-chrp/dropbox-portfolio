@@ -5,6 +5,23 @@ import Link from "next/link";
 import DynamicImage from "@/components/DynamicImage";
 import { getNameWithoutExtensionSuffix, getNameWithoutOrderPrefix } from "@/utils/nameFormat";
 import ReactMarkdownPortfolio from "@/components/ReactMarkdownPortfolio";
+import { Metadata } from "next";
+
+type Props = {
+    params: {
+        name: string;
+    };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const workName = getNameWithoutOrderPrefix(decodeURIComponent(params.name));
+    return {
+        title: workName,
+        openGraph: {
+            images: [`/work/${params.name}/thumbnail/${AppConstants.WORK_MAIN_IMG_NAME}`],
+        },
+    }
+}
 
 const WorkImage = ({ name, key, workName, workDisplayName, hover, priority }: {
     name: string, key?: string, workName: string, workDisplayName: string, hover?: boolean, priority?: boolean
@@ -27,7 +44,7 @@ const WorkImage = ({ name, key, workName, workDisplayName, hover, priority }: {
     )
 }
 
-export default async function Page({ params }: { params: { name: string } }) {
+export default async function Page({ params }: Props) {
     const uriDecodedName = decodeURIComponent(params.name);
 
     const descriptionMarkdown = await getTextFileOrErrorMsg(SharedLink, AppConstants.getWorkDescriptionPath(uriDecodedName))

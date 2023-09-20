@@ -1,17 +1,37 @@
 import { AppConstants } from "@/utils/constants";
 import { getFileUrl } from "@/utils/dbx/fetch_content_link"
+import { getNameWithoutOrderPrefix } from "@/utils/nameFormat";
+import { Metadata } from "next";
 
-export default async function Page({ params }: { params: { name: string, file: string } }) {
-    const uriDecodedName = decodeURIComponent(params.name);
-    const imgRelativePath = decodeURIComponent(params.file);
+type Props = {
+    params: {
+        name: string;
+        img: string;
+    };
+};
 
-    const imgPath = AppConstants.getWorkImgPath(uriDecodedName, imgRelativePath)
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const workName = getNameWithoutOrderPrefix(decodeURIComponent(params.name));
+    const imgName = getNameWithoutOrderPrefix(decodeURIComponent(params.img));
+    return {
+        title: `${imgName} | ${workName}`,
+        openGraph: {
+            images: [`/work/${params.name}/thumbnail/${params.img}`],
+        },
+    }
+}
+
+export default async function Page({ params }: Props) {
+    const workName = decodeURIComponent(params.name);
+    const imgName = decodeURIComponent(params.img);
+
+    const imgPath = AppConstants.getWorkImgPath(workName, imgName)
     
     const imgUrl = await getFileUrl(imgPath);
 
     return (<>
         <picture>
-            <img src={imgUrl} alt={imgRelativePath} />
+            <img src={imgUrl} alt={imgName} />
         </picture>
     </>)
 }

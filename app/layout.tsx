@@ -9,8 +9,14 @@ const crimson = Crimson_Text({
 })
 
 export const metadata: Metadata = {
-  title: 'pamela maldonado vallejos',
-  description: 'Portfolio of pamela maldonado vallejos',
+  title: {
+    template: '%s | pamela maldonado vallejos',
+    default: 'pamela maldonado vallejos',
+  },
+  description: 'Portfolio of Pamela Maldonado Vallejos',
+  openGraph: {
+    images: ['/icon.png']
+  }
 }
 
 export default function RootLayout({
