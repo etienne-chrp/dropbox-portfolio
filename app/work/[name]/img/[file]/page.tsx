@@ -4,26 +4,30 @@ import { getNameWithoutOrderPrefix, getNameWithoutExtensionSuffix } from "@/util
 import { Metadata } from "next";
 
 type Props = {
-    params: {
+    params:  Promise<{
         name: string;
         file: string;
-    };
+    }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const workName = getNameWithoutOrderPrefix(decodeURIComponent(params.name));
-    const imgName = getNameWithoutExtensionSuffix(getNameWithoutOrderPrefix(decodeURIComponent(params.file)));
+    const { name, file } = await params
+
+    const workName = getNameWithoutOrderPrefix(decodeURIComponent(name));
+    const imgName = getNameWithoutExtensionSuffix(getNameWithoutOrderPrefix(decodeURIComponent(file)));
     return {
         title: `${imgName} | ${workName}`,
         openGraph: {
-            images: [`/work/${params.name}/thumbnail/${params.file}`],
+            images: [`/work/${name}/thumbnail/${file}`],
         },
     }
 }
 
 export default async function Page({ params }: Props) {
-    const workName = decodeURIComponent(params.name);
-    const imgName = decodeURIComponent(params.file);
+    const { name, file } = await params
+
+    const workName = decodeURIComponent(name);
+    const imgName = decodeURIComponent(file);
 
     const imgPath = AppConstants.getWorkImgPath(workName, imgName)
     

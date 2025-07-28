@@ -4,6 +4,8 @@ import ReactMarkdown from "react-markdown"
 
 export default function ReactMarkdownPortfolio({children}: {children: string}) {
     return (
-        <ReactMarkdown className="markdown">{children}</ReactMarkdown>
+        <div className="markdown">
+            <ReactMarkdown>{children}</ReactMarkdown>
+        </div>
     )
 }

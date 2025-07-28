@@ -1,11 +1,13 @@
 import { Dropbox, files as dbxFile } from "dropbox"
 import { cache } from 'react'
 import { dbxClientId, dbxClientSecret, dbxRefreshToken } from "./common";
+import fetch from "node-fetch";
 
 const dbx = new Dropbox({
     refreshToken: dbxRefreshToken,
     clientId: dbxClientId,
-    clientSecret: dbxClientSecret
+    clientSecret: dbxClientSecret,
+    fetch: fetch
 })
 
 export const revalidate = 600 // revalidate the data at most every minute

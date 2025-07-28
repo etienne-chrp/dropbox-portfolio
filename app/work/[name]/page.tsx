@@ -8,27 +8,28 @@ import ReactMarkdownPortfolio from "@/components/ReactMarkdownPortfolio";
 import { Metadata } from "next";
 
 type Props = {
-    params: {
+    params: Promise<{
         name: string;
-    };
+    }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const workName = getNameWithoutOrderPrefix(decodeURIComponent(params.name));
+    const paramsAwaited = await params
+    const workName = getNameWithoutOrderPrefix(decodeURIComponent(paramsAwaited.name));
     return {
         title: workName,
         openGraph: {
-            images: [`/work/${params.name}/thumbnail/${AppConstants.WORK_MAIN_IMG_NAME}`],
+            images: [`/work/${paramsAwaited.name}/thumbnail/${AppConstants.WORK_MAIN_IMG_NAME}`],
         },
     }
 }
 
-const WorkImage = ({ name, key, workName, workDisplayName, hover, priority }: {
-    name: string, key?: string, workName: string, workDisplayName: string, hover?: boolean, priority?: boolean
+const WorkImage = ({ name, img_key, workName, workDisplayName, hover, priority }: {
+    name: string, img_key?: string, workName: string, workDisplayName: string, hover?: boolean, priority?: boolean
 }) => {
     return (
         <div className="relative">
-            <div key={key} className={`peer my-4 transition-all ${hover && 'sm:hover:brightness-50'}`}>
+            <div key={img_key} className={`peer my-4 transition-all ${hover && 'sm:hover:brightness-50'}`}>
                 <Link href={AppConstants.getWorkImgPath(workDisplayName, name)}>
                     <DynamicImage
                         src={`/work/${workName}/thumbnail/${name}`}
@@ -45,7 +46,8 @@ const WorkImage = ({ name, key, workName, workDisplayName, hover, priority }: {
 }
 
 export default async function Page({ params }: Props) {
-    const uriDecodedName = decodeURIComponent(params.name);
+    const paramsAwaited = await params
+    const uriDecodedName = decodeURIComponent(paramsAwaited.name);
 
     const descriptionMarkdown = await getTextFileOrErrorMsg(SharedLink, AppConstants.getWorkDescriptionPath(uriDecodedName))
     const infoMarkdown = await getTextFileOrErrorMsg(SharedLink, AppConstants.getWorkInfoPath(uriDecodedName))
@@ -65,12 +67,12 @@ export default async function Page({ params }: Props) {
     return (
         <div className="mt-6">
             <ReactMarkdownPortfolio>{infoMarkdown}</ReactMarkdownPortfolio>
-            <WorkImage name={AppConstants.WORK_MAIN_IMG_NAME} workName={params.name} workDisplayName={uriDecodedName} priority />
+            <WorkImage name={AppConstants.WORK_MAIN_IMG_NAME} workName={paramsAwaited.name} workDisplayName={uriDecodedName} priority />
             <ReactMarkdownPortfolio>{descriptionMarkdown}</ReactMarkdownPortfolio>
             <div className="flex flex-col">
                 {imageList.map(image => {
                     return (
-                        <WorkImage key={image.name} name={image.name} workName={params.name} workDisplayName={uriDecodedName} hover />
+                        <WorkImage key={image.name} name={image.name} workName={paramsAwaited.name} workDisplayName={uriDecodedName} hover />
                     )
                 })}
             </div>
