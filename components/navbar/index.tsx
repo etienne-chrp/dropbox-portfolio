@@ -45,7 +45,7 @@ const Navbar = () => {
       </ul>
       <label htmlFor="menuBtn" className="flex flex-col space-y-[0.2rem] justify-center sm:showing sm:hidden z-50">
         <div className={`${genericHamburgerLine} ${menuOpen && "rotate-45 translate-y-[0.4rem]"}`} />
-        <div className={`${genericHamburgerLine} ${menuOpen && "!opacity-0"}`} />
+        <div className={`${genericHamburgerLine} ${menuOpen && "opacity-0!"}`} />
         <div className={`${genericHamburgerLine} ${menuOpen && "-rotate-45 -translate-y-[0.4rem]"}`} />
       </label>
     </nav>
