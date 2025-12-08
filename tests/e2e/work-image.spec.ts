@@ -72,40 +72,48 @@ test.describe('Work Image Page', () => {
     const workLinks = page.locator('a[href*="/work/"]').filter({ hasNotText: /thumbnail/ });
     const workLinkCount = await workLinks.count();
     
-    if (workLinkCount > 0) {
-      await workLinks.first().click();
-      await page.waitForLoadState('networkidle');
-      
-      // Find and click an image link
-      const imageLinks = page.locator('a[href*="/img/"]');
-      const imageLinkCount = await imageLinks.count();
-      
-      if (imageLinkCount > 0) {
-        await imageLinks.first().click();
-        await page.waitForLoadState('networkidle');
-        
-        // Wait for the image to load
-        const img = page.locator('picture img');
-        await expect(img).toBeVisible({ timeout: 15000 });
-        
-        // Verify the image has a valid src attribute
-        const src = await img.getAttribute('src');
-        expect(src).toBeTruthy();
-        expect(src).not.toContain('undefined');
-        expect(src).not.toContain('null');
-        
-        // Verify no error messages
-        const errorMessages = await page.locator('text=/error|failed|exception/i').count();
-        expect(errorMessages).toBe(0);
-        
-        // Check for critical console errors
-        const criticalErrors = errors.filter(e => 
-          !e.includes('Warning:') && 
-          !e.includes('metadataBase')
-        );
-        expect(criticalErrors).toHaveLength(0);
-      }
-    }
+    // Ensure we have work items to test
+    expect(workLinkCount).toBeGreaterThan(0);
+    
+    await workLinks.first().click();
+    await page.waitForLoadState('networkidle');
+    
+    // Find and click an image link
+    const imageLinks = page.locator('a[href*="/img/"]');
+    const imageLinkCount = await imageLinks.count();
+    
+    // Ensure we have image links to test
+    expect(imageLinkCount).toBeGreaterThan(0);
+    
+    await imageLinks.first().click();
+    await page.waitForLoadState('networkidle');
+    
+    // Wait for the image to load
+    const img = page.locator('picture img');
+    await expect(img).toBeVisible({ timeout: 15000 });
+    
+    // Verify the image has a valid src attribute
+    const src = await img.getAttribute('src');
+    expect(src).toBeTruthy();
+    expect(src).not.toContain('undefined');
+    expect(src).not.toContain('null');
+    
+    // Verify the image actually loaded successfully
+    const imageLoaded = await img.evaluate((el: HTMLImageElement) => {
+      return el.complete && el.naturalWidth > 0;
+    });
+    expect(imageLoaded).toBe(true);
+    
+    // Verify no error messages
+    const errorMessages = await page.locator('text=/error|failed|exception/i').count();
+    expect(errorMessages).toBe(0);
+    
+    // Check for critical console errors
+    const criticalErrors = errors.filter(e => 
+      !e.includes('Warning:') && 
+      !e.includes('metadataBase')
+    );
+    expect(criticalErrors).toHaveLength(0);
   });
 
   test('should have proper metadata and title', async ({ page }) => {
@@ -147,6 +155,36 @@ test.describe('Work Image Page', () => {
     // We just verify the page doesn't crash
     const title = await page.title();
     expect(title).toBeTruthy();
+  });
+  
+  test('should return 200 status for valid image pages', async ({ page }) => {
+    // Navigate to work listing
+    await page.goto('/work');
+    await page.waitForTimeout(8000);
+    
+    const workLinks = page.locator('a[href*="/work/"]').filter({ hasNotText: /thumbnail/ });
+    const workLinkCount = await workLinks.count();
+    
+    expect(workLinkCount).toBeGreaterThan(0);
+    
+    await workLinks.first().click();
+    await page.waitForLoadState('networkidle');
+    
+    // Find image links
+    const imageLinks = page.locator('a[href*="/img/"]');
+    const imageLinkCount = await imageLinks.count();
+    
+    expect(imageLinkCount).toBeGreaterThan(0);
+    
+    // Get the URL of the first image link
+    const firstImageUrl = await imageLinks.first().getAttribute('href');
+    expect(firstImageUrl).toBeTruthy();
+    
+    // Navigate to the image page and check status
+    const response = await page.goto(firstImageUrl!);
+    
+    // Should return 200, not 404 or 500
+    expect(response?.status()).toBe(200);
   });
 
   test('should load high-resolution image from Dropbox', async ({ page }) => {
