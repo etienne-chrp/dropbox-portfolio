@@ -20,7 +20,12 @@ jobs:
       
       - name: Download latest robots.txt
         run: |
-          curl -o robots-temp.txt https://raw.githubusercontent.com/ai-robots-txt/ai.robots.txt/main/robots.txt
+          cat > robots-temp.txt << 'HEADER'
+          # Block AI scrapers and crawlers
+          # Source: https://github.com/ai-robots-txt/ai.robots.txt
+          
+          HEADER
+          curl -s https://raw.githubusercontent.com/ai-robots-txt/ai.robots.txt/main/robots.txt >> robots-temp.txt
       
       - name: Add search engine allowances
         run: |
