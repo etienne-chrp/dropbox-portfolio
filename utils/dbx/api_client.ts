@@ -19,9 +19,9 @@ export const getFile = cache(async (sharedLink: string, path: string) => {
 const getTextFile = cache(async (sharedLink: string, path: string): Promise<string> => {
     const response = await getFile(sharedLink, path);
     let result: any = response.result;
-    let binaries: Buffer = result.fileBinary;
+    let binaries: Blob = result.fileBlob;
 
-    return binaries.toString();
+    return binaries.text();
 });
 
 export const getTextFileOrErrorMsg = cache(async (sharedLink: string, path: string): Promise<string> => {
@@ -58,8 +58,10 @@ export const getThumbnail = cache(async (sharedLink: string, path: string, size:
 export async function getThumbnailBase64(sharedLink: string, path: string) {
     const response = await getThumbnail(sharedLink, path, { ".tag": "w960h640" });
     let result: any = response.result;
-    let binaries: Buffer = result.fileBinary;
+    let binaries: Blob = result.fileBlob;
 
     const dataImagePrefix = `data:image/png;base64,`
-    return `${dataImagePrefix}${binaries.toString('base64')}`
+    const arrayBuffer = await binaries.arrayBuffer();
+    const base64String = Buffer.from(arrayBuffer).toString('base64');
+    return `${dataImagePrefix}${base64String}`
 }
