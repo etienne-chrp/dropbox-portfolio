@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { waitForLoadingToComplete } from './test-utils';
 
 test.describe('Work Portfolio Page', () => {
   test('should load the work page without errors', async ({ page }) => {
@@ -40,8 +41,8 @@ test.describe('Work Portfolio Page', () => {
     const response = await page.goto('/work');
     expect(response?.status()).toBe(200);
     
-    // Wait for content to load (adjust timeout for Dropbox API calls)
-    await page.waitForTimeout(8000);
+    // Wait for loading component to disappear
+    await waitForLoadingToComplete(page);
     
     // Verify no "Failed to retrieve" messages
     const failedMessages = await page.locator('text=/failed to retrieve/i').count();
@@ -62,8 +63,8 @@ test.describe('Work Portfolio Page', () => {
     const response = await page.goto('/work');
     expect(response?.status()).toBe(200);
     
-    // Wait for thumbnails to load
-    await page.waitForTimeout(10000);
+    // Wait for loading component to disappear
+    await waitForLoadingToComplete(page);
     
     // Check for thumbnail images
     const thumbnails = page.locator('img[src*="thumbnail"]');
@@ -86,8 +87,8 @@ test.describe('Work Portfolio Page', () => {
     const response = await page.goto('/work');
     expect(response?.status()).toBe(200);
     
-    // Wait for work items to load
-    await page.waitForTimeout(8000);
+    // Wait for loading component to disappear
+    await waitForLoadingToComplete(page);
     
     // Try to find work item links
     const workLinks = page.locator('a[href*="/work/"]').filter({ hasNotText: /thumbnail/ });

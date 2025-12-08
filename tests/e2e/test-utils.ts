@@ -6,6 +6,19 @@ export interface ErrorCollector {
 }
 
 /**
+ * Wait for the Loading3Dots component to disappear
+ */
+export async function waitForLoadingToComplete(page: Page, timeout: number = 15000): Promise<void> {
+  try {
+    await page.waitForSelector('.animate-pulse', { state: 'detached', timeout });
+  } catch (error) {
+    // If the loading component is not found or already gone, that's fine
+    // Just ensure the page is in a stable state
+    await page.waitForLoadState('networkidle', { timeout });
+  }
+}
+
+/**
  * Set up error listeners on a page to collect console errors and page errors
  */
 export function collectPageErrors(page: Page): ErrorCollector {

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { waitForLoadingToComplete } from './test-utils';
 
 test.describe('Work Image Page', () => {
   test('should load work image page from work detail page without errors', async ({ page }) => {
@@ -14,7 +15,7 @@ test.describe('Work Image Page', () => {
     expect(response?.status()).toBe(200);
     
     // Wait for work items to load
-    await page.waitForTimeout(8000);
+    await waitForLoadingToComplete(page);
     
     // Find and click the first work item
     const workLinks = page.locator('a[href*="/work/"]').filter({ hasNotText: /thumbnail/ });
@@ -34,9 +35,18 @@ test.describe('Work Image Page', () => {
       const imageLinkCount = await imageLinks.count();
       
       if (imageLinkCount > 0) {
-        // Click on the first image link
-        await imageLinks.first().click();
-        await page.waitForLoadState('networkidle');
+        // Get the href before clicking to verify it's correct
+        const imageHref = await imageLinks.first().getAttribute('href');
+        expect(imageHref).toContain('/img/');
+        
+        // Click on the first image link and wait for navigation
+        await Promise.all([
+          page.waitForURL('**/img/**', { timeout: 10000 }),
+          imageLinks.first().click()
+        ]);
+        
+        // Wait for loading to complete
+        await waitForLoadingToComplete(page);
         
         // Verify we're on an image page
         expect(page.url()).toContain('/work/');
@@ -67,7 +77,7 @@ test.describe('Work Image Page', () => {
     
     // Navigate to a work page first
     await page.goto('/work');
-    await page.waitForTimeout(8000);
+    await waitForLoadingToComplete(page);
     
     const workLinks = page.locator('a[href*="/work/"]').filter({ hasNotText: /thumbnail/ });
     const workLinkCount = await workLinks.count();
@@ -119,7 +129,7 @@ test.describe('Work Image Page', () => {
   test('should have proper metadata and title', async ({ page }) => {
     // Navigate through work listing to get to an image
     await page.goto('/work');
-    await page.waitForTimeout(5000);
+    await waitForLoadingToComplete(page);
     
     const workLinks = page.locator('a[href*="/work/"]').filter({ hasNotText: /thumbnail/ });
     const workLinkCount = await workLinks.count();
@@ -160,7 +170,7 @@ test.describe('Work Image Page', () => {
   test('should return 200 status for valid image pages', async ({ page }) => {
     // Navigate to work listing
     await page.goto('/work');
-    await page.waitForTimeout(8000);
+    await waitForLoadingToComplete(page);
     
     const workLinks = page.locator('a[href*="/work/"]').filter({ hasNotText: /thumbnail/ });
     const workLinkCount = await workLinks.count();
@@ -190,7 +200,7 @@ test.describe('Work Image Page', () => {
   test('should load high-resolution image from Dropbox', async ({ page }) => {
     // Navigate to work page
     await page.goto('/work');
-    await page.waitForTimeout(5000);
+    await waitForLoadingToComplete(page);
     
     const workLinks = page.locator('a[href*="/work/"]').filter({ hasNotText: /thumbnail/ });
     const workLinkCount = await workLinks.count();
@@ -203,11 +213,27 @@ test.describe('Work Image Page', () => {
       const imageLinkCount = await imageLinks.count();
       
       if (imageLinkCount > 0) {
-        await imageLinks.first().click();
+        // Wait for navigation to image page
+        await Promise.all([
+          page.waitForURL('**/img/**', { timeout: 10000 }),
+          imageLinks.first().click()
+        ]);
+        
+        // Wait for loading to complete
+        await waitForLoadingToComplete(page);
         
         // Wait for the image element
         const img = page.locator('picture img');
         await img.waitFor({ state: 'visible', timeout: 15000 });
+        
+        // Wait for image to actually load
+        await img.evaluate((el: HTMLImageElement) => {
+          if (el.complete && el.naturalWidth > 0) return;
+          return new Promise((resolve) => {
+            el.onload = resolve;
+            el.onerror = resolve;
+          });
+        });
         
         // Verify image loaded successfully
         const isVisible = await img.isVisible();
@@ -225,7 +251,7 @@ test.describe('Work Image Page', () => {
   test('should navigate back to work detail from image page', async ({ page }) => {
     // Navigate to an image page
     await page.goto('/work');
-    await page.waitForTimeout(5000);
+    await waitForLoadingToComplete(page);
     
     const workLinks = page.locator('a[href*="/work/"]').filter({ hasNotText: /thumbnail/ });
     const workLinkCount = await workLinks.count();
@@ -239,16 +265,21 @@ test.describe('Work Image Page', () => {
       const imageLinkCount = await imageLinks.count();
       
       if (imageLinkCount > 0) {
-        await imageLinks.first().click();
+        // Wait for navigation to image page
+        await Promise.all([
+          page.waitForURL('**/img/**', { timeout: 10000 }),
+          imageLinks.first().click()
+        ]);
         await page.waitForLoadState('networkidle');
         
         // Go back using browser back button
         await page.goBack();
         await page.waitForLoadState('networkidle');
         
-        // Verify we're back on the work detail page
-        expect(page.url()).toContain('/work/');
-        expect(page.url()).not.toContain('/img/');
+        // Verify we're back on the work detail page (not the listing)
+        const currentPath = new URL(page.url()).pathname;
+        expect(currentPath).toMatch(/^\/work\/[^/]+$/); // Matches /work/{name} but not /work or /work/{name}/img/...
+        expect(currentPath).not.toContain('/img/');
       }
     }
   });
@@ -256,7 +287,7 @@ test.describe('Work Image Page', () => {
   test('should have accessible image with alt text', async ({ page }) => {
     // Navigate to an image page
     await page.goto('/work');
-    await page.waitForTimeout(5000);
+    await waitForLoadingToComplete(page);
     
     const workLinks = page.locator('a[href*="/work/"]').filter({ hasNotText: /thumbnail/ });
     const workLinkCount = await workLinks.count();

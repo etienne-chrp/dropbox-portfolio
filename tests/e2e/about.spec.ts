@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { waitForLoadingToComplete } from './test-utils';
 
 test.describe('About Page', () => {
   test('should load the about page without errors', async ({ page }) => {
@@ -39,8 +40,8 @@ test.describe('About Page', () => {
     const response = await page.goto('/about');
     expect(response?.status()).toBe(200);
     
-    // Wait for content to load
-    await page.waitForTimeout(5000);
+    // Wait for loading component to disappear
+    await waitForLoadingToComplete(page);
     
     // The page should have a valid title
     const title = await page.title();
