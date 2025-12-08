@@ -2,7 +2,7 @@ import { SharedLink } from "./common"
 import { getFolder } from "./api_client";
 
 async function getRedirectUrl(url: string) {
-    const response = await fetch(url, { redirect: "manual", next: { revalidate: 60 } });
+    const response = await fetch(url, { redirect: "manual" });
 
     if (response.status != 302)
         throw (`There was an issue while getting redirect url: ${response.status} - ${response.statusText}`)
@@ -21,8 +21,6 @@ export const getFileUrl = async (imgPath: string) => {
     imgDlUrl.searchParams.delete("dl");
     imgDlUrl.searchParams.append("dl", "1");
 
-    const redirectedDlUrl = await getRedirectUrl(imgDlUrl.href);
-
-    return await getRedirectUrl(`${imgDlUrl.origin}${redirectedDlUrl}`);
+    return await getRedirectUrl(imgDlUrl.href);
 }
 
