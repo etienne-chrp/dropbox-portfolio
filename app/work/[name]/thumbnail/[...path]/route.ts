@@ -11,9 +11,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ name
 
     const imgPath = AppConstants.getWorkImgPath(uriDecodedName, imgRelativePath)
     const thumbnail = await getThumbnail(SharedLink, imgPath, { ".tag": "w2048h1536" })
-    let binaries = (thumbnail.result as any).fileBinary;
+    let binaries = (thumbnail.result as any).fileBlob as Blob;
 
-    return new NextResponse(binaries.buffer, { headers: { 
+    return new NextResponse(await binaries.arrayBuffer(), { headers: { 
         'content-type': 'image/jpg',
         'cache-control': 'max-age=600'
     } })
