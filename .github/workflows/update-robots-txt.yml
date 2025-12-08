@@ -1,0 +1,72 @@
+name: Update Robots.txt
+
+on:
+  schedule:
+    # Run quarterly on the 1st of January, April, July, and October at 9 AM UTC
+    - cron: '0 9 1 1,4,7,10 *'
+  workflow_dispatch:
+    # Allow manual trigger
+
+jobs:
+  update-robots-txt:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download latest robots.txt
+        run: |
+          curl -o robots-temp.txt https://raw.githubusercontent.com/ai-robots-txt/ai.robots.txt/main/robots.txt
+      
+      - name: Add search engine allowances
+        run: |
+          # Append allowed search engines to the downloaded robots.txt
+          cat >> robots-temp.txt << 'EOF'
+          
+          # Allow standard search engines
+          User-agent: Googlebot
+          User-agent: Bingbot
+          User-agent: DuckDuckBot
+          User-agent: Slurp
+          User-agent: Baiduspider
+          User-agent: YandexBot
+          Allow: /
+          
+          # Default rule for all other bots
+          User-agent: *
+          Disallow: /
+          EOF
+          
+          # Move to public directory
+          mv robots-temp.txt public/robots.txt
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet public/robots.txt; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create Pull Request
+        if: steps.check_changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update robots.txt with latest AI bot blocklist'
+          title: 'Update robots.txt with latest AI bot blocklist'
+          body: |
+            This PR automatically updates `public/robots.txt` with the latest AI bot blocklist from https://github.com/ai-robots-txt/ai.robots.txt
+            
+            ## Changes
+            - Updated AI bot blocking rules
+            - Preserved allowances for legitimate search engines
+            
+            ## Source
+            https://github.com/ai-robots-txt/ai.robots.txt/releases
+            
+            Please review and merge if the changes look correct.
+          branch: update-robots-txt
+          delete-branch: true
