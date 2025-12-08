@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=22 <23"
+    "node": ">=22 <25"
   },
   "scripts": {
     "dev": "next dev",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.11",
-    "@types/node": "^22.13.14",
+    "@types/node": "^24.0.0",
     "@types/node-fetch": "^2.5.7",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
