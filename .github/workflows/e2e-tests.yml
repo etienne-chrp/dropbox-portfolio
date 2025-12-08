@@ -1,20 +1,23 @@
 name: E2E Tests on Vercel Preview
 
 on:
-  repository_dispatch:
-    types:
-      - 'vercel.deployment.success'
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   run-e2e-tests:
-    if: github.event_name == 'repository_dispatch'
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Wait for Vercel Preview
+        uses: patrickedqvist/wait-for-vercel-preview@v1.3.2
+        id: vercel-preview
         with:
-          ref: ${{ github.event.client_payload.git.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          max_timeout: 300
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -25,14 +28,30 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(node -e "console.log(require('./package.json').devDependencies['@playwright/test'])")" >> $GITHUB_OUTPUT
+      
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}
+      
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
+      
+      - name: Install Playwright browser dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps
       
       - name: Run E2E tests
         run: npx playwright test
         env:
-          BASE_URL: ${{ github.event.client_payload.url }}
-          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.client_payload.url }}
+          BASE_URL: ${{ steps.vercel-preview.outputs.url }}
+          PLAYWRIGHT_TEST_BASE_URL: ${{ steps.vercel-preview.outputs.url }}
       
       - name: Upload test results
         uses: actions/upload-artifact@v4
