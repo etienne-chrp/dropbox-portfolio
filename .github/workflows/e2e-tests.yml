@@ -6,6 +6,7 @@ on:
 
 jobs:
   run-e2e-tests:
+    environment: Preview
     runs-on: ubuntu-latest
     
     steps:
@@ -13,11 +14,12 @@ jobs:
         uses: actions/checkout@v6
       
       - name: Wait for Vercel Preview
-        uses: patrickedqvist/wait-for-vercel-preview@v1.3.2
+        uses: patrickedqvist/wait-for-vercel-preview@main
         id: vercel-preview
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           max_timeout: 300
+          vercel_protection_bypass_header: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
       
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -28,13 +30,13 @@ jobs:
       - uses: bahmutov/npm-install@v1
 
       - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
       - name: Run E2E tests
         run: npx playwright test
         env:
           BASE_URL: ${{ steps.vercel-preview.outputs.url }}
           PLAYWRIGHT_TEST_BASE_URL: ${{ steps.vercel-preview.outputs.url }}
+          VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
       
       - name: Upload test results
         uses: actions/upload-artifact@v5
