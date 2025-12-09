@@ -32,6 +32,10 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    /* Add Vercel protection bypass header if secret is provided */
+    extraHTTPHeaders: process.env.VERCEL_AUTOMATION_BYPASS_SECRET ? {
+      'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
+    } : {},
     /* Fail on console errors */
     // This will make tests fail if there are console errors
     // video: 'retain-on-failure',
