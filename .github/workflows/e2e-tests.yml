@@ -38,7 +38,7 @@ jobs:
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
       
       - name: Upload test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: playwright-report
@@ -46,7 +46,7 @@ jobs:
           retention-days: 30
       
       - name: Upload test screenshots
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: playwright-screenshots
