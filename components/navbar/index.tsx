@@ -26,7 +26,9 @@ const Navbar = () => {
         peer-checked:pt-4
         peer-checked:-mx-2
         peer-checked:px-2
-        peer-checked:text-xl
+        peer-checked:text-2xl
+
+        text-lg
 
         h-0 peer-checked:h-full sm:h-full
         fixed sm:relative
@@ -37,10 +39,13 @@ const Navbar = () => {
         "
       >
         <li>
-          <Link onClick={() => setMenuOpen(false)} href="/work">Work</Link>
+          <Link onClick={() => setMenuOpen(false)} href="/work">work</Link>
         </li>
         <li>
-          <Link onClick={() => setMenuOpen(false)} href="/about">About</Link>
+          <Link onClick={() => setMenuOpen(false)} href="/art">art</Link>
+        </li>
+        <li>
+          <Link onClick={() => setMenuOpen(false)} href="/about">about</Link>
         </li>
       </ul>
       <label htmlFor="menuBtn" className="flex flex-col space-y-[0.2rem] justify-center sm:showing sm:hidden z-50">

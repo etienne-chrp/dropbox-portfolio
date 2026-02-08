@@ -13,12 +13,12 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { name, file } = await params
 
-    const workName = getNameWithoutOrderPrefix(decodeURIComponent(name));
+    const artName = getNameWithoutOrderPrefix(decodeURIComponent(name));
     const imgName = getNameWithoutExtensionSuffix(getNameWithoutOrderPrefix(decodeURIComponent(file)));
     return {
-        title: `${imgName} | ${workName}`,
+        title: `${imgName} | ${artName}`,
         openGraph: {
-            images: [`/work/${name}/thumbnail/${file}`],
+            images: [`/art/${name}/thumbnail/${file}`],
         },
     }
 }
@@ -26,14 +26,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
     const { name, file } = await params
 
-    const workName = decodeURIComponent(name);
+    const artName = decodeURIComponent(name);
     const imgName = decodeURIComponent(file);
 
     return (
         <ImagePage
-            name={workName}
+            name={artName}
             file={imgName}
-            getImgPath={AppConstants.getWorkImgPath}
+            getImgPath={AppConstants.getArtImgPath}
         />
     )
 }
