@@ -1,7 +1,7 @@
 import { AppConstants } from "@/utils/constants";
-import { getFileUrl } from "@/utils/dbx/fetch_content_link"
 import { getNameWithoutOrderPrefix, getNameWithoutExtensionSuffix } from "@/utils/nameFormat";
 import { Metadata } from "next";
+import ImagePage from "@/components/ImagePage";
 
 type Props = {
     params:  Promise<{
@@ -29,13 +29,11 @@ export default async function Page({ params }: Props) {
     const workName = decodeURIComponent(name);
     const imgName = decodeURIComponent(file);
 
-    const imgPath = AppConstants.getWorkImgPath(workName, imgName)
-    
-    const imgUrl = await getFileUrl(imgPath);
-
-    return (<>
-        <picture>
-            <img src={imgUrl} alt={imgName} />
-        </picture>
-    </>)
+    return (
+        <ImagePage
+            name={workName}
+            file={imgName}
+            getImgPath={AppConstants.getWorkImgPath}
+        />
+    )
 }
