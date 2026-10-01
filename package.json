@@ -30,10 +30,10 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "react-markdown": "^10.1.0",
-    "tailwindcss": "4.3.2",
-    "typescript": "6.0.3"
+    "tailwindcss": "4.3.2"
   },
   "devDependencies": {
-    "@playwright/test": "^1.57.0"
+    "@playwright/test": "^1.57.0",
+    "typescript": "7.0.2"
   }
 }
